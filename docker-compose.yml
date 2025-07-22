@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: document_classifier_db
+    environment:
+      POSTGRES_DB: documents_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql # Script para crear tablas
+      - db_data:/var/lib/postgresql/data # Persistencia de datos
+    ports:
+      - "5432:5432" # Mapea el puerto de la DB al host (opcional, útil para acceder desde tu máquina)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d documents_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - classifier_network
+
+  ml_service:
+    build: ./ml_service # Construye desde el Dockerfile en ml_service/
+    container_name: ml_classifier_service
+    ports:
+      - "8000:8000" # <--- ¡Aquí está el cambio clave! Mapea el puerto 8000 del contenedor al puerto 8000 del host
+    environment:
+      PYTHONUNBUFFERED: 1 # Útil para ver logs en tiempo real
+    depends_on:
+      db:
+        condition: service_healthy # Asegura que la DB esté lista antes de iniciar
+    networks:
+      - classifier_network
+
+  document_service:
+    build: ./document_service # Construye desde el Dockerfile en document_service/
+    container_name: document_manager_service
+    ports:
+      - "8001:8000" # Mapea el puerto 8001 del host al puerto 8000 del contenedor (para evitar conflicto con ml_service)
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/documents_db # URL de conexión a la DB
+      ML_SERVICE_URL: http://ml_service:8000 # URL para comunicarse con el servicio ML (puerto 8000 interno del ML service)
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      ml_service:
+        condition: service_started # Espera a que el ML service esté corriendo
+      db:
+        condition: service_healthy # Espera a que la DB esté lista
+    networks:
+      - classifier_network
+
+# Definición de volúmenes para persistencia
+volumes:
+  db_data:
+
+# Definición de la red personalizada
+networks:
+  classifier_network:
+    driver: bridge # Tipo de red por defecto

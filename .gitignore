@@ -1,0 +1,47 @@
+# Ignorar archivos compilados de Python
+*.pyc
+__pycache__/
+
+# Ignorar archivos de configuración de entorno (variables sensibles, etc.)
+# Si tienes archivos .env en cada microservicio, ignóralos
+.env
+# Si tienes otros archivos TOML con configuraciones sensibles o locales que NO deben ser versionadas
+# OJO: Si tus pyproject.toml deben ser versionados (que es lo normal), NO los ignores aquí.
+# Si tienes un archivo de configuración TOML específico que NO debe ser versionado, ignóralo por nombre:
+# config_local.toml
+# .some_secret_config.toml
+
+# Ignorar directorios de paquetes y dependencias (si se generan localmente fuera de Docker)
+# Aunque uses TOML, algunas herramientas pueden generar estos directorios
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Ignorar archivos de editores de código o IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignorar logs
+*.log
+logs/
+
+# Ignorar notebooks de Jupyter si son solo para experimentación local
+.ipynb_checkpoints/
+*.ipynb # Si no quieres versionar tus notebooks
+
+# Ignorar artefactos de ML que serán gestionados por Git LFS
+# Esto es una redundancia, ya que Git LFS los manejará, pero es una buena práctica.
+# Más adelante configuraremos Git LFS para archivos específicos.
+# modelos_ml/ # Si quieres ignorar todo el directorio y solo trackear con Git LFS
+# *.h5
+# *.pkl
+# *.ckpt
+# datasets/
+
+# Ignorar archivos y directorios específicos de Docker
+# Ignora el contexto de build si se genera algo temporal
+# Ignora volúmenes de Docker si los creas localmente y no deben ser versionados
+# No necesitas ignorar las imágenes o contenedores de Docker, ya que no son parte del repositorio

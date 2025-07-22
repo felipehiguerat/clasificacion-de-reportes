@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "ml-service"
+version = "0.1.0"
+description = ""
+authors = ["Felipe Higuera <felipehiguera27@gmail.com>"] # Formato de autores corregido
+readme = "README.md"
+package-mode = false # Deshabilita el modo de paquete para servicios
+
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13" # Dependencia de Python para Poetry
+pandas = "^2.3.1"
+scikit-learn = "^1.7.1"
+numpy = "^2.3.1"
+fastapi = "^0.116.1" # Dependencia para la API FastAPI
+uvicorn = "^0.35.0"  # Dependencia para el servidor Uvicorn
+nltk = "^3.9.1"
+joblib = "^1.5.1"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
