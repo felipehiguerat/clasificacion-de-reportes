@@ -17,7 +17,7 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-root --no-dev --sync
 
 # Copia el código de tu aplicación
-# Asegúrate de que esta ruta sea correcta: main.py debe estar en la raíz de tu carpeta document_service
+
 COPY main.py ./
 
 # Expone el puerto en el que correrá tu API de FastAPI (8000 es el puerto por defecto de Uvicorn)
