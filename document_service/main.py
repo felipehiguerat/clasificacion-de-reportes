@@ -4,15 +4,32 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field
 import sqlalchemy
 from datetime import datetime 
-#
+from fastapi.middleware.cors import CORSMiddleware
 
 ML_SERVICE_URL = os.environ.get("ML_SERVICE_URL", "http://localhost:8000") 
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://user:password@host:5432/dbname") 
----
+
 app = FastAPI(
     title="Document Service",
     description="Servicio para gestionar documentos y orquestar su clasificación ML.",
     version="1.0.0"
+)
+
+
+# --- Configuración CORS ---
+origins = [
+    "http://localhost",
+    "http://localhost:3000", 
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins, 
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"], 
 )
 
 
